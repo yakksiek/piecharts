@@ -1,12 +1,11 @@
-import { PieChart, Pie, Cell, ResponsiveContainer, Sector } from 'recharts';
+import { Cell, Pie, PieChart, ResponsiveContainer } from 'recharts';
 import * as S from './styled';
-import { useState } from 'react';
 
 const CustomProgressChart = ({ percentage = 64.5 }) => {
-  const [blueActive, setBlueActive] = useState(true);
-  const [orangeActive, setOrangeActive] = useState(true);
+  // const [blueActive, setBlueActive] = useState(true);
+  // const [orangeActive, setOrangeActive] = useState(true);
 
-  const handleBlueClick = (e, index, event) => {
+  const handleBlueClick = (event: React.MouseEvent) => {
     if (event.shiftKey) {
       console.log('with shift');
     } else {
@@ -175,7 +174,7 @@ const CustomProgressChart = ({ percentage = 64.5 }) => {
             filter='url(#dropShadow)'
             cornerRadius={2}
             isAnimationActive={false}
-            onClick={(e, index, event) => handleBlueClick(e, index, event)}
+            onClick={(e, index, event) => handleBlueClick(event)}
             style={{ cursor: 'pointer' }}
           >
             <Cell fill='transparent' stroke='none' />
