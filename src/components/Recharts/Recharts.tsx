@@ -139,7 +139,7 @@ export const CustomProgressChart = ({ percentage = 64.5 }) => {
             endAngle={-270}
             dataKey='value'
             cornerRadius={2}
-            isAnimationActive={false}
+            // isAnimationActive={false}
             onClick={() => console.log('asdf')}
           >
             <Cell fill='url(#orangeGradient)' stroke='#F6F6F8' />
