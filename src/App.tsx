@@ -1,12 +1,12 @@
-import GradientChart from './GradientChart';
-import Recharts from './components/Recharts/Recharts';
+import { CircularProgressChart } from './components/GradientChart';
+import { CustomProgressChart } from './components/Recharts';
 
 const App = () => {
   return (
     <div>
       <h4>Gradient Chart with Stripes</h4>
-      <GradientChart />
-      <Recharts />
+      <CircularProgressChart />
+      <CustomProgressChart />
     </div>
   );
 };

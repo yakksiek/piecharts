@@ -1,7 +1,7 @@
 import { Cell, Pie, PieChart, ResponsiveContainer } from 'recharts';
 import * as S from './styled';
 
-const CustomProgressChart = ({ percentage = 64.5 }) => {
+export const CustomProgressChart = ({ percentage = 64.5 }) => {
   // const [blueActive, setBlueActive] = useState(true);
   // const [orangeActive, setOrangeActive] = useState(true);
 
@@ -157,7 +157,7 @@ const CustomProgressChart = ({ percentage = 64.5 }) => {
             endAngle={-270}
             dataKey='value'
             cornerRadius={2}
-            isAnimationActive={false}
+            // isAnimationActive={false}
           >
             <Cell fill='url(#diagonalStripes)' stroke='#F6F6F8' />
             <Cell fill='transparent' stroke='none' />
@@ -173,8 +173,12 @@ const CustomProgressChart = ({ percentage = 64.5 }) => {
             dataKey='value'
             filter='url(#dropShadow)'
             cornerRadius={2}
-            isAnimationActive={false}
-            onClick={(e, index, event) => handleBlueClick(event)}
+            // isAnimationActive={false}
+            onClick={(e, index, event) => {
+              console.log(e);
+              console.log(index);
+              handleBlueClick(event);
+            }}
             style={{ cursor: 'pointer' }}
           >
             <Cell fill='transparent' stroke='none' />
@@ -219,5 +223,3 @@ const CustomProgressChart = ({ percentage = 64.5 }) => {
     </S.Wrapper>
   );
 };
-
-export default CustomProgressChart;
