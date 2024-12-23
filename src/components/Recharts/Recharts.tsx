@@ -1,16 +1,47 @@
+import { useEffect, useState } from 'react';
 import { Cell, Pie, PieChart, ResponsiveContainer } from 'recharts';
 import * as S from './styled';
 
+const ACTIVE_THICKNESS = 85;
+const DISABLED_THICKNESS = 78;
+const ANIMATION_DURATION = 500;
+
 export const CustomProgressChart = ({ percentage = 64.5 }) => {
-  // const [blueActive, setBlueActive] = useState(true);
-  // const [orangeActive, setOrangeActive] = useState(true);
+  const [isAnimated, setIsAnimated] = useState(true);
+  const [isBlueActive, setBlueActive] = useState(true);
+  const [isOrangeActive, setOrangeActive] = useState(true);
+
+  useEffect(() => {
+    // Disable animation after the first render
+    const timeout = setTimeout(() => setIsAnimated(false), 1000); // Adjust the delay as needed
+    return () => clearTimeout(timeout);
+  }, []);
 
   const handleBlueClick = (event: React.MouseEvent) => {
     if (event.shiftKey) {
-      console.log('with shift');
-    } else {
-      console.log('click');
+      return handleOutsideClick();
     }
+
+    if (!isBlueActive) {
+      setBlueActive(!isBlueActive);
+    }
+    setOrangeActive(!isOrangeActive);
+  };
+
+  const handleOrangeClick = (event: React.MouseEvent) => {
+    if (event.shiftKey) {
+      return handleOutsideClick();
+    }
+
+    if (!isOrangeActive) {
+      setOrangeActive(!isOrangeActive);
+    }
+    setBlueActive(!isBlueActive);
+  };
+
+  const handleOutsideClick = () => {
+    setOrangeActive(true);
+    setBlueActive(true);
   };
 
   const renderDefs = () => (
@@ -67,31 +98,6 @@ export const CustomProgressChart = ({ percentage = 64.5 }) => {
           fillOpacity='1'
         />
       </pattern>
-
-      <filter
-        id='dropShadow'
-        height='130%'
-        width='130%'
-        filterUnits='userSpaceOnUse'
-      >
-        <feFlood
-          floodColor='rgb(87, 137, 213)'
-          floodOpacity='0.7'
-          result='shadowColor'
-        />
-        <feGaussianBlur in='SourceAlpha' stdDeviation='6' result='blur' />
-        <feOffset dx='0' dy='0' result='offsetblur' />
-        <feComposite
-          in='shadowColor'
-          in2='offsetblur'
-          operator='in'
-          result='coloredShadow'
-        />
-        <feMerge>
-          <feMergeNode in='coloredShadow' />
-          <feMergeNode in='SourceGraphic' />
-        </feMerge>
-      </filter>
     </defs>
   );
 
@@ -126,6 +132,10 @@ export const CustomProgressChart = ({ percentage = 64.5 }) => {
             endAngle={-270}
             dataKey='value'
             isAnimationActive={false}
+            style={{
+              outline: 'none', // Removes the focus outline
+              cursor: 'pointer',
+            }}
           >
             <Cell fill='#EEEEF2' stroke='none' />
           </Pie>
@@ -134,56 +144,130 @@ export const CustomProgressChart = ({ percentage = 64.5 }) => {
             cx='50%'
             cy='50%'
             innerRadius={55}
-            outerRadius={78} // Smaller radius for orange segment
+            outerRadius={isOrangeActive ? ACTIVE_THICKNESS : DISABLED_THICKNESS}
             startAngle={90}
             endAngle={-270}
             dataKey='value'
             cornerRadius={2}
-            // isAnimationActive={false}
-            onClick={() => console.log('asdf')}
+            isAnimationActive={isAnimated}
+            animationDuration={ANIMATION_DURATION}
+            style={{
+              outline: 'none', // Removes the focus outline
+              cursor: 'pointer',
+            }}
           >
-            <Cell fill='url(#orangeGradient)' stroke='#F6F6F8' />
-            {/* Orange gradient with stripes */}
-            <Cell fill='transparent' stroke='none' />{' '}
-            {/* Transparent cell for blue space */}
-          </Pie>
-          <Pie
-            data={orangeData}
-            cx='50%'
-            cy='50%'
-            innerRadius={55}
-            outerRadius={78}
-            startAngle={90}
-            endAngle={-270}
-            dataKey='value'
-            cornerRadius={2}
-            // isAnimationActive={false}
-          >
-            <Cell fill='url(#diagonalStripes)' stroke='#F6F6F8' />
+            <Cell
+              onClick={handleOrangeClick}
+              fill='url(#orangeGradient)'
+              stroke={'#F6F6F8'}
+              style={
+                isOrangeActive
+                  ? {
+                      filter:
+                        'drop-shadow(0 0 8px rgba(234, 84, 0, 0.3)) drop-shadow(0 0 8px rgba(234, 84, 0, 0.2))',
+                      outline: 'none', // Removes the focus outline
+                      cursor: 'pointer',
+                    }
+                  : {
+                      outline: 'none', // Removes the focus outline
+                      cursor: 'pointer',
+                    }
+              }
+            />
             <Cell fill='transparent' stroke='none' />
           </Pie>
+
+          {/* render stripes */}
+          {!isOrangeActive && (
+            <Pie
+              data={orangeData}
+              cx='50%'
+              cy='50%'
+              innerRadius={55}
+              outerRadius={78}
+              startAngle={90}
+              endAngle={-270}
+              dataKey='value'
+              cornerRadius={2}
+              isAnimationActive={isAnimated}
+              animationDuration={ANIMATION_DURATION}
+              style={{
+                outline: 'none', // Removes the focus outline
+                cursor: 'pointer',
+              }}
+            >
+              <Cell
+                fill='url(#diagonalStripes)'
+                stroke='#F6F6F8'
+                style={{ pointerEvents: 'none' }}
+              />
+              <Cell fill='transparent' stroke='none' />
+            </Pie>
+          )}
+
+          {/* BLUE SEGMENT */}
           <Pie
             data={blueData}
             cx='50%'
             cy='50%'
             innerRadius={55}
-            outerRadius={85}
+            outerRadius={isBlueActive ? ACTIVE_THICKNESS : DISABLED_THICKNESS}
             startAngle={90}
             endAngle={-270}
             dataKey='value'
-            filter='url(#dropShadow)'
             cornerRadius={2}
-            // isAnimationActive={false}
-            onClick={(e, index, event) => {
-              console.log(e);
-              console.log(index);
-              handleBlueClick(event);
-            }}
-            style={{ cursor: 'pointer' }}
+            isAnimationActive={isAnimated}
+            animationDuration={ANIMATION_DURATION}
           >
-            <Cell fill='transparent' stroke='none' />
-            <Cell fill='url(#blueGradient)' />
+            <Cell
+              fill='transparent'
+              stroke='none'
+              style={{ pointerEvents: 'none' }}
+            />
+            <Cell
+              fill='url(#blueGradient)'
+              onClick={handleBlueClick}
+              stroke={'#F6F6F8'}
+              style={
+                isBlueActive
+                  ? {
+                      filter:
+                        'drop-shadow(0 0 8px rgba(23, 106, 229, 0.3)) drop-shadow(0 0 8px rgba(23, 106, 229, 0.2))',
+                      outline: 'none', // Removes the focus outline
+                      cursor: 'pointer',
+                    }
+                  : {
+                      outline: 'none', // Removes the focus outline
+                      cursor: 'pointer',
+                    }
+              }
+            />
           </Pie>
+
+          {/* render stripes for blue */}
+          {!isBlueActive && (
+            <Pie
+              data={blueData}
+              cx='50%'
+              cy='50%'
+              innerRadius={55}
+              outerRadius={78}
+              startAngle={90}
+              endAngle={-270}
+              dataKey='value'
+              cornerRadius={2}
+              isAnimationActive={isAnimated}
+              animationDuration={ANIMATION_DURATION}
+              style={{
+                outline: 'none',
+                cursor: 'pointer',
+                pointerEvents: 'none',
+              }}
+            >
+              <Cell fill='transparent' stroke='none' />
+              <Cell fill='url(#diagonalStripes)' stroke='#F6F6F8' />
+            </Pie>
+          )}
 
           <Pie
             data={backgroundData}
@@ -195,6 +279,11 @@ export const CustomProgressChart = ({ percentage = 64.5 }) => {
             endAngle={-270}
             dataKey='value'
             isAnimationActive={false}
+            style={{
+              outline: 'none', // Removes the focus outline
+              cursor: 'pointer',
+              pointerEvents: 'none',
+            }}
           >
             <Cell fill='#F6F6F8' stroke='#EBEBF2' />
           </Pie>
@@ -209,17 +298,25 @@ export const CustomProgressChart = ({ percentage = 64.5 }) => {
             dataKey='value'
             isAnimationActive={false}
           >
-            <Cell fill='#F6F6F8' stroke='none' />
+            <Cell
+              fill='#F6F6F8'
+              stroke='none'
+              style={{
+                outline: 'none', // Removes the focus outline
+                cursor: 'pointer',
+              }}
+              onClick={handleOutsideClick}
+            />
           </Pie>
         </PieChart>
       </ResponsiveContainer>
 
-      {/* <S.LabelWrapper>
+      <S.LabelWrapper>
         <S.Label>
           {percentage}
           <span>%</span>
         </S.Label>
-      </S.LabelWrapper> */}
+      </S.LabelWrapper>
     </S.Wrapper>
   );
 };

@@ -12,6 +12,7 @@ export const LabelWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  pointer-events: none;
 `;
 
 export const Label = styled.span`
