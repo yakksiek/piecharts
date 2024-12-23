@@ -98,6 +98,56 @@ export const CustomProgressChart = ({ percentage = 64.5 }) => {
           fillOpacity='1'
         />
       </pattern>
+
+      <filter
+        id='dropShadowFilterOrange'
+        x='-50%'
+        y='-50%'
+        width='200%'
+        height='200%'
+      >
+        <feDropShadow
+          dx='0'
+          dy='0'
+          stdDeviation='6'
+          floodColor='rgba(234, 84, 0, 0.4)'
+        />
+        <feDropShadow
+          dx='0'
+          dy='0'
+          stdDeviation='10'
+          floodColor='rgba(234, 84, 0, 0.2)'
+        />
+      </filter>
+
+      {/* <filter
+        id='dropShadowFilterBlue'
+        x='-50%'
+        y='-50%'
+        width='200%'
+        height='200%'
+      >
+        <feDropShadow
+          dx='0'
+          dy='0'
+          stdDeviation='6'
+          floodColor='rgba(23, 106, 229, 0.3)'
+        />
+        <feDropShadow
+          dx='0'
+          dy='0'
+          stdDeviation='10'
+          floodColor='rgba(23, 106, 229, 0.2)'
+        />
+      </filter> */}
+      <filter id='dropShadowFilterBlue'>
+        <feDropShadow
+          dx='0'
+          dy='0'
+          stdDeviation='8'
+          floodColor='rgba(23, 106, 229, 0.7)'
+        />
+      </filter>
     </defs>
   );
 
@@ -132,6 +182,7 @@ export const CustomProgressChart = ({ percentage = 64.5 }) => {
             endAngle={-270}
             dataKey='value'
             isAnimationActive={false}
+            // animationDuration={ANIMATION_DURATION}
             style={{
               outline: 'none', // Removes the focus outline
               cursor: 'pointer',
@@ -160,12 +211,15 @@ export const CustomProgressChart = ({ percentage = 64.5 }) => {
               onClick={handleOrangeClick}
               fill='url(#orangeGradient)'
               stroke={'#F6F6F8'}
+              filter={isOrangeActive ? 'url(#dropShadowFilterOrange)' : 'none'}
               style={
                 isOrangeActive
                   ? {
-                      filter:
-                        'drop-shadow(0 0 8px rgba(234, 84, 0, 0.3)) drop-shadow(0 0 8px rgba(234, 84, 0, 0.2))',
-                      outline: 'none', // Removes the focus outline
+                      // filter:
+                      //   'drop-shadow(0 0 4px rgba(234, 84, 0, 0.4)) drop-shadow(0 0 8px rgba(234, 84, 0, 0.2))',
+                      // WebkitFilter:
+                      //   'drop-shadow(0 0 4px rgba(234, 84, 0, 0.4)) drop-shadow(0 0 8px rgba(234, 84, 0, 0.2))',
+                      outline: 'none',
                       cursor: 'pointer',
                     }
                   : {
@@ -228,11 +282,12 @@ export const CustomProgressChart = ({ percentage = 64.5 }) => {
               fill='url(#blueGradient)'
               onClick={handleBlueClick}
               stroke={'#F6F6F8'}
+              filter={isBlueActive ? 'url(#dropShadowFilterBlue)' : 'none'}
               style={
                 isBlueActive
                   ? {
-                      filter:
-                        'drop-shadow(0 0 8px rgba(23, 106, 229, 0.3)) drop-shadow(0 0 8px rgba(23, 106, 229, 0.2))',
+                      // filter:
+                      //   'drop-shadow(0 0 8px rgba(23, 106, 229, 0.3)) drop-shadow(0 0 8px rgba(23, 106, 229, 0.2))',
                       outline: 'none', // Removes the focus outline
                       cursor: 'pointer',
                     }
